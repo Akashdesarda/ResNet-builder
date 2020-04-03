@@ -1,9 +1,7 @@
-import os
-
 from tensorflow.keras.optimizers import Adam
 
-from core.ResNet import build_resnet_model
 from core.data_loader import DataLoader
+from core.resnet import build_resnet_model
 from utils.callbacks import callbacks
 from utils.misc_utils import *
 
