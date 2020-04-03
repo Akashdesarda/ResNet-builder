@@ -1,10 +1,10 @@
 from typing import *
-import numpy as np
-from tensorflow.keras.layers import Input, Add, Conv2D, Dense, Activation, BatchNormalization, \
-    MaxPooling2D, AveragePooling2D, Flatten, Dropout
-from tensorflow.keras.regularizers import l2
-from tensorflow.keras.models import Model
+
 import tensorflow as tf
+from tensorflow.keras.layers import Input, Conv2D, Dense, Activation, BatchNormalization, \
+    AveragePooling2D, Flatten, Dropout
+from tensorflow.keras.models import Model
+from tensorflow.keras.regularizers import l2
 
 
 # Identity Block or Residual Block or simply Skip Connector
@@ -52,9 +52,9 @@ def residual_block(X, num_filters: int, stride: int = 1, kernel_size: int = 3,
     return X
 
 
-def build_resnet(input_shape: Tuple[int, int, int],
-                 depth: int,
-                 num_classes: int):
+def build_resnet_model(input_shape: Tuple[int, int, int],
+                       depth: int,
+                       num_classes: int):
     """
     ResNet Version 2 Model builder [b]
 
@@ -143,10 +143,82 @@ def build_resnet(input_shape: Tuple[int, int, int],
     y = Dense(512, activation='relu')(y)
     y = BatchNormalization()(y)
     y = Dropout(0.5)(y)
-    
+
     outputs = Dense(num_classes,
                     activation='softmax')(y)
 
     # Instantiate model.
     model = Model(inputs=inputs, outputs=outputs)
     return model
+
+
+def build_resnet_layer(inputs, num_filters_in: int, depth: int):
+    """
+    Append desired no Residual layer with current Sequential layers.
+    Input should be an instance of either Keras Sequential or Functional API with input shape.
+    You may use output from this function to connect to a fully connected layer or any other layer.
+    eg: Input layer --> Conv2d layer --> resnet_layer_sequential --> FC
+
+    Parameters
+    ----------
+    X : Tensor layer
+        Input tensor from previous layer
+    num_filters : int
+        Conv2d number of filters
+    depth: int
+        Number of Residual layer to be appended with current Sequential layer
+
+    Returns
+    -------
+        Network with Residual layer appended.
+    """
+
+    # ResNet V2 performs Conv2D on X before spiting into two path
+    X = residual_block(X=inputs, num_filters=num_filters_in, conv_first=True)
+
+    # Building stack of residual units
+    for stage in range(3):
+        for unit_res_block in range(depth):
+            activation = 'relu'
+            bn = True
+            stride = 1
+            # First layer and first stage
+            if stage == 0:
+                num_filters_out = num_filters_in * 4
+                if unit_res_block == 0:
+                    activation = None
+                    bn = False
+                # First layer but not first stage
+            else:
+                num_filters_out = num_filters_in * 2
+                if unit_res_block == 0:
+                    stride = 2
+
+            # bottleneck residual unit
+            y = residual_block(X,
+                               num_filters=num_filters_in,
+                               kernel_size=1,
+                               stride=stride,
+                               activation=activation,
+                               bn=bn,
+                               conv_first=False)
+            y = residual_block(y,
+                               num_filters=num_filters_in,
+                               conv_first=False)
+            y = residual_block(y,
+                               num_filters=num_filters_out,
+                               kernel_size=1,
+                               conv_first=False)
+            if unit_res_block == 0:
+                # linear projection residual shortcut connection to match
+                # changed dims
+                X = residual_block(X=X,
+                                   num_filters=num_filters_out,
+                                   kernel_size=1,
+                                   stride=stride,
+                                   activation=None,
+                                   bn=False)
+            X = tf.keras.layers.add([X, y])
+        num_filters_in = num_filters_out
+
+    return X
