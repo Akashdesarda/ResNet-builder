@@ -1,10 +1,12 @@
-from utils.misc_utils import *
-import tensorflow as tf
-from ResNet import build_resnet
-from data_loader import DataLoader
-from utils.callbacks import callbacks
-from tensorflow.keras.optimizers import Adam
 import os
+
+from tensorflow.keras.optimizers import Adam
+
+from core.ResNet import build_resnet_model
+from core.data_loader import DataLoader
+from utils.callbacks import callbacks
+from utils.misc_utils import *
+
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 depth = 56
@@ -32,7 +34,7 @@ train_generator,xtest,ytest = dl.from_common_dir(
     batch_size=batch_size
 )
 
-model = build_resnet(
+model = build_resnet_model(
     input_shape=(32, 32, 3),
     depth=depth,
     num_classes=dl.num_classes
