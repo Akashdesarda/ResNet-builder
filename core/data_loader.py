@@ -1,13 +1,14 @@
 # Input will be classwise folders. Perform Load --> Augmentation --> ImageDataGenerator. Return Train generator, validation generator
 import os
 from typing import *
+
 import numpy as np
-from tqdm import tqdm
 from imutils import paths
-from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
-from tensorflow.keras.utils import to_categorical
+from sklearn.preprocessing import LabelEncoder
 from tensorflow.keras.preprocessing.image import ImageDataGenerator, load_img
+from tensorflow.keras.utils import to_categorical
+from tqdm import tqdm
 
 
 class DataLoader:
