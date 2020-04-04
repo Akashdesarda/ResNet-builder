@@ -158,13 +158,14 @@ def build_resnet_layer(inputs, num_filters_in: int, depth: int):
     Append desired no Residual layer with current Sequential layers.
     Input should be an instance of either Keras Sequential or Functional API with input shape.
     You may use output from this function to connect to a fully connected layer or any other layer.
+
     eg: Input layer --> Conv2d layer --> resnet_layer_sequential --> FC
 
     Parameters
     ----------
-    X : Tensor layer
+    inputs : Tensor layer
         Input tensor from previous layer
-    num_filters : int
+    num_filters_in : int
         Conv2d number of filters
     depth: int
         Number of Residual layer to be appended with current Sequential layer
@@ -231,7 +232,8 @@ def build_resnet_pretrained(base_model: str = 'ResNet50V2',
                             freeze: bool = True):
     """
     Build a ResNetV2 model using pretrained weights (eg. trained on imagenet).
-    Use this if you want to use Transfer learning approach. For Fine-Tuning Layers can be freeze & only Fully connected layer can be trained.
+    Use this if you want to use Transfer learning approach. For Fine-Tuning Layers can be freeze & only Fully connected
+    layer can be trained.
 
     Parameters
     ----------
