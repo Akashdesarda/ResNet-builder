@@ -1,6 +1,7 @@
 from typing import *
 
 import tensorflow as tf
+from tensorflow.keras.applications.resnet_v2 import *
 from tensorflow.keras.layers import Input, Conv2D, Dense, Activation, BatchNormalization, \
     AveragePooling2D, Flatten, Dropout
 from tensorflow.keras.models import Model
@@ -222,3 +223,131 @@ def build_resnet_layer(inputs, num_filters_in: int, depth: int):
         num_filters_in = num_filters_out
 
     return X
+
+
+def build_resnet_pretrained(base_model: str = 'ResNet50V2',
+                            input_shape: Tuple[int, int, int] = None,
+                            no_classes: int = None,
+                            freeze: bool = True):
+    """
+    Build a ResNetV2 model using pretrained weights (eg. trained on imagenet).
+    Use this if you want to use Transfer learning approach. For Fine-Tuning Layers can be freeze & only Fully connected layer can be trained.
+
+    Parameters
+    ----------
+    base_model : str, optional
+        Base model to be used. Anything from 'ResNet50V2', 'ResNet101V2', 'ResNet152V2', by default 'ResNet50V2'
+    input_shape : tuple
+        3d tensor shape of images feeding as input
+    no_classes : int
+        No of classes to classify
+    freeze : bool, optional
+        Freeze all convolution layers and train only on Fully connected layer. Keep it true for transfer learning, by default True
+
+    Returns
+    -------
+    Keras model
+
+    Raises
+    ------
+    ValueError
+        "Base model should be from 'ResNet50V2', 'ResNet101V2', 'ResNet152V2'
+
+    Notes
+    -----
+        Model will also include a Fully connected layer at end.
+    """
+    if base_model not in ['ResNet50V2', 'ResNet101V2', 'ResNet152V2']:
+        raise ValueError("Base model should be from 'ResNet50V2', 'ResNet101V2', 'ResNet152V2'")
+
+    if base_model == 'ResNet50V2':
+        base = ResNet50V2(weights='imagenet', include_top=False,
+                          input_tensor=Input(shape=input_shape))
+    elif base_model == 'ResNet101V2':
+        base = ResNet101V2(weights='imagenet', include_top=False,
+                           input_tensor=Input(shape=input_shape))
+    elif base_model == 'ResNet152V2':
+        base = ResNet152V2(weights='imagenet', include_top=False,
+                           input_tensor=Input(shape=input_shape))
+
+        # Constructing Head model which will sit on top of base model
+    head_model = base.output
+    head_model = AveragePooling2D(pool_size=(3, 3))(head_model)
+    head_model = Flatten()(head_model)
+    head_model = Dense(512, activation='relu')(head_model)
+    head_model = BatchNormalization()(head_model)
+    head_model = Dropout(0.5)(head_model)
+    head_model = Dense(no_classes, activation='softmax')(head_model)
+
+    # Combining base model FC head model
+    model = Model(inputs=base.input, outputs=head_model)
+
+    # Freezing weights
+    for layer in base.layers:
+        layer.trainable = False
+
+    return model
+
+
+def build_resnet_pretrained_customized(base_model: str = 'ResNet50V2',
+                                       input_shape: Tuple[int, int, int] = None):
+    """
+    Build a ResNetV2 model using pretrained weights (eg. trained on imagenet). Use this if you want to use Transfer
+    learning approach and desired fully connected layer. You have to append a fully connected layer at end w.r.t to
+    Kearas Functional API.
+
+    Examples
+    --------
+    X = build_resnet_pretrained_customized(input_shape = (224,224,3)
+
+    # Append FC layer
+
+    y = X.output
+
+    y = Flatten()(y)
+
+    y = Dense(10, activation='softmax')(y)
+
+    # Combining base model FC head model
+
+    model = Model(inputs=x.input, outputs=y)
+
+    # Freezing weights
+
+    for layer in base.layers:
+        layer.trainable = False
+
+    Parameters
+    ----------
+    base_model : str, optional
+        Base model to be used. Anything from 'ResNet50V2', 'ResNet101V2', 'ResNet152V2', by default 'ResNet50V2'
+    input_shape : tuple
+        3d tensor shape of images feeding as input
+
+    Returns
+    -------
+    Keras model
+
+    Raises
+    ------
+    ValueError
+        "Base model should be from 'ResNet50V2', 'ResNet101V2', 'ResNet152V2'
+
+    Notes
+    -----
+        Model will not include a Fully connected layer at end at you have to add it.
+    """
+    if base_model not in ['ResNet50V2', 'ResNet101V2', 'ResNet152V2']:
+        raise ValueError("Base model should be from 'ResNet50V2', 'ResNet101V2', 'ResNet152V2'")
+
+    if base_model == 'ResNet50V2':
+        base = ResNet50V2(weights='imagenet', include_top=False,
+                          input_tensor=Input(shape=input_shape))
+    elif base_model == 'ResNet101V2':
+        base = ResNet101V2(weights='imagenet', include_top=False,
+                           input_tensor=Input(shape=input_shape))
+    elif base_model == 'ResNet152V2':
+        base = ResNet152V2(weights='imagenet', include_top=False,
+                           input_tensor=Input(shape=input_shape))
+
+    return base
