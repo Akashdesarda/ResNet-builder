@@ -6,7 +6,7 @@ __pycache__/
 # C extensions
 *.so
 
-./sphinx_docs
+sphinx_docs
 
 # Distribution / packaging
 .Python
@@ -130,3 +130,6 @@ dmypy.json
 # Pyre type checker
 .pyre/
 /.idea/
+sphinx_docs/_static/
+sphinx_docs/_templates/
+sphinx_docs/assets/weights/
