@@ -4,10 +4,11 @@ Build a Customized ResNet architecture with n desired depth or layers. Based on 
 ### Contents
 
  1. [Overview](#overview)
- 2. [Architecture](#architure)
- 3. [Dataset](#Dataset)
- 4. [Report](#report)
- 5. [Disclaimer](#disclaimer)
+ 2. [Architecture](#architecture)
+ 3. [Data Loader](#dataloader)
+ 4. [Example](#example)
+ 5. [Documentation](#documentation)
+ 6. [TODO](#todo)
 
 ### Overview
 ResNet have solved one of the most important problem- vanishing/exploding gradient problem and enables us to go much much deeper in our network. *The principal focus or aim of this Repo is,*
@@ -23,7 +24,7 @@ ResNet have solved one of the most important problem- vanishing/exploding gradie
 4. Fine Tune ResNetV2 with fully connected layer not included
 
 ### Architecture 
-Majorly the architecture is based on **ResNetV2**: [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027), though I have customised it a bit to further give better results. Enhancements include adding a Dropout layer, Skip connection over three layers, etc. I benchmark both version and tested on Cifar10 and saw 5-10% better result. Refer this [example](#model.png) architecture with depth 9 for visualization. 
+Majorly the architecture is based on **ResNetV2**: [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027), though I have customised it a bit to further give better results. Enhancements include adding a Dropout layer, Skip connection over three layers, etc. I benchmark both version and tested on Cifar10 and saw 5-10% better result. Refer this [example](model.png) architecture with depth 9 for visualization. 
 
 ### Data Loader
 Support for two data configration:
@@ -34,4 +35,12 @@ Support for two data configration:
 > Note: The format of data should follow Imagenet format ie some_directory/class/*.jpeg
 
 ### Example 
-Refer to [Tutorial notebook](#Tutorial.ipynb) for example & API refrence. 
+Refer to [Tutorial notebook](Tutorial.ipynb) for example & API refrence. 
+
+### Documentation
+Refer [ResNet Builder docs](https://akashdesarda.github.io/ResNet-builder/index.html) for all API refrence and documentation. 
+
+### TODO
+
+ 1. Universal API to execute any job
+ 2. Add more example
