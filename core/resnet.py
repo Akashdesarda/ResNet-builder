@@ -159,7 +159,7 @@ def build_resnet_layer(inputs, num_filters_in: int, depth: int):
     Input should be an instance of either Keras Sequential or Functional API with input shape.
     You may use output from this function to connect to a fully connected layer or any other layer.
 
-    eg: Input layer --> Conv2d layer --> resnet_layer_sequential --> FC
+    eg: Input layer --> Conv2d layer --> resnet_layer --> FC
 
     Parameters
     ----------
@@ -285,8 +285,9 @@ def build_resnet_pretrained(base_model: str = 'ResNet50V2',
     model = Model(inputs=base.input, outputs=head_model)
 
     # Freezing weights
-    for layer in base.layers:
-        layer.trainable = False
+    if freeze:
+        for layer in base.layers:
+            layer.trainable = False
 
     return model
 

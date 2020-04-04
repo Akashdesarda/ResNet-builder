@@ -156,7 +156,7 @@ class DataLoader:
     #     )
     #     return train_generator, val_generator
 
-    def from_dir(self, path: str,
+    def from_dir(self, directory: str,
                  target_size: tuple = (256, 256),
                  color_mode: str = 'rgb',
                  classes: int = None,
@@ -169,7 +169,7 @@ class DataLoader:
 
         Parameters
         ----------
-        path : str
+        directory : str
             Path of Image Directory. It should contain one subdirectory per class.
             Any PNG, JPG, BMP, PPM or TIF images inside each of the subdirectories
             directory tree will be included in the generator.
@@ -205,7 +205,7 @@ class DataLoader:
 
         """
         return self._datagen().flow_from_directory(
-            directory=path,
+            directory=directory,
             target_size=target_size,
             color_mode=color_mode,
             classes=classes,
