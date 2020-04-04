@@ -23,7 +23,7 @@ ResNet have solved one of the most important problem- vanishing/exploding gradie
 4. Fine Tune ResNetV2 with fully connected layer not included
 
 ### Architecture 
-Majorly the architecture is based on **ResNetV2**: [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027), though I have customised it a bit to further give better results. Enhancements include adding a Dropout layer, Skip connection over three layers, etc. I benchmark both version and tested on Cifar10 and saw 5-10% better result. Refer this [example](#model.png) architecture with depth 9 for visualization. 
+Majorly the architecture is based on **ResNetV2**: [Identity Mappings in Deep Residual Networks](https://arxiv.org/abs/1603.05027), though I have customised it a bit to further give better results. Enhancements include adding a Dropout layer, Skip connection over three layers, etc. I benchmark both version and tested on Cifar10 and saw 5-10% better result. Refer this [example](./model.png) architecture with depth 9 for visualization. 
 
 ### Data Loader
 Support for two data configration:
@@ -34,4 +34,4 @@ Support for two data configration:
 > Note: The format of data should follow Imagenet format ie some_directory/class/*.jpeg
 
 ### Example 
-Refer to [Tutorial notebook](#Tutorial.ipynb) for example & API refrence. 
+Refer to [Tutorial notebook](./Tutorial.ipynb) for example & API refrence. 
