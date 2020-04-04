@@ -5,7 +5,7 @@ Build a Customized ResNet architecture with n desired depth or layers. Based on 
 
  1. [Overview](#overview)
  2. [Architecture](#architecture)
- 3. [Data Loader](#dataloader)
+ 3. [Data Loader](#data loader)
  4. [Example](#example)
  5. [Documentation](#documentation)
  6. [TODO](#todo)
